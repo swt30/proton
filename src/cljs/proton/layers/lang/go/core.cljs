@@ -2,15 +2,20 @@
   (:require [proton.lib.mode :as mode]
             [proton.lib.helpers :refer [console!]]
             [proton.layers.core.actions :as actions])
-  (:use [proton.layers.base :only [init-layer! get-packages register-layer-dependencies init-package]]))
+  (:use [proton.layers.base :only [init-layer! get-packages register-layer-dependencies init-package get-initial-config]]))
 
 (defmethod get-packages :lang/go []
   [:language-go
-   :go-plus
    :go-get
    :go-config
    :go-debug
-   :gorename])
+   :gorename
+   :autocomplete-go
+   :navigator-godef
+   :tester-go
+   :gofmt
+   :builder-go
+   :go-plus])
 
 (defmethod init-layer! :lang/go []
   (console! "init" :lang/go)
@@ -19,6 +24,9 @@
   (mode/define-mode :go-major-mode
     {:atom-scope ["source.go"]
      :atom-grammars ["Go"]}))
+
+(defmethod get-initial-config :lang/go []
+  [["go-debug.panelInitialVisible" false]])
 
 (defmethod init-package [:lang/go :go-plus] []
   (mode/define-package-mode :go-plus
@@ -58,6 +66,7 @@
 (defmethod init-package [:lang/go :gorename] []
   (mode/define-package-mode :gorename
     {:mode-keybindings
-      {:r {:category "rename"
-           :n {:action "gorename:rename" :target actions/get-active-editor :title "go-rename"}}}})
+      {:r {:title "go-rename"
+           :action "golang:gorename"
+           :target actions/get-active-editor}}})
   (mode/link-modes :go-major-mode (mode/package-mode-name :gorename)))
