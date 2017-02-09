@@ -52,6 +52,9 @@
                :title "Open Julia home"}
            :k {:action "julia:open-package-in-new-window"
                :title "Open package in new window"}}
+       :g {:action "julia-client:goto-symbol"
+           :target actions/get-active-editor
+           :title "Goto declaration"}
        :c {:category "clear"
            :c {:action "julia-client:clear-console"
                :title "Console"}}
